@@ -4,24 +4,14 @@
     table:`$string table; //converts table to string, then symbol. Helps feed numerical categorical variables 
     n:count table; // count rows
     p:count cols table; //count columns
-    newColumns:{?[table;();();x]}each (exec cols table from table); // list of new columns, not distinct
-    /creates nondistinct list of symbol entries
-    entries:(count cols table)#count table;
-    stringColumns:string each cols table;
-    stringEntries:string each raze newColumns;
-    counter:1+count cols table;
-    counter2:0;
-    newCols:();
-    while[counter-:1;newCols,: stringColumns[counter2],/: entries[counter2]#stringEntries;stringEntries:entries[counter2]_stringEntries;counter2+:1];
-    backupColumnList:newCols:`$newCols;
-    //replaces table entries with new column names
-    columnList:cols table;
-    counter:1+count cols table;
-    counter2:0;
     //adds name of column to table entries
-    while[counter-:1;@[`table;columnList[counter2];:;(count table)#newCols];newCols:(count table)_newCols;counter2+:1];
+    newCols:`$(raze string (count table)#/:cols table) ,'(raze value flip string table); //nondistict list of newColumns
+    distinctEntries:count each distinct each table[cols table]; //list of distinct entries per column
+    /take:distinctEntries*count table 
+    shape:(sum distinctEntries ; count table);
+    table:flip (cols table)!((count cols table)#shape#newCols);
     //section creates comparative table for boolean later
-    uniqueColumnList:distinct backupColumnList;
+    uniqueColumnList:distinct newCols;
     //create and populate a table with dummy values and dummy variables
     dummytable:flip uniqueColumnList!(flip (count table)#(enlist (count uniqueColumnList)#`sym)); //dummytable filled with `sym
     dummytable2:0#dummytable;
@@ -31,7 +21,7 @@
     distinctEntries:count each distinct each table[cols table]; //list of distinct entries per variable
     take:distinctEntries*count table; // list, unique entries for each column * number of rows
     shape:(sum distinctEntries ; count table); //number of columns, rows for final table
-    dummytable2:(dummytable2 upsert (flip (shape)#raze(take # ' {?[table;();();x]}each cols table)));
+    dummytable2:(dummytable2 upsert (flip (shape)#raze(take # ' value flip table)));
     completeDisjunctiveTable:1*dummytable=dummytable2;
     relativeFrequencyTable:completeDisjunctiveTable%(n*p);
     columnProfileTable:completeDisjunctiveTable%\:(sum completeDisjunctiveTable)[cols completeDisjunctiveTable];

@@ -1,0 +1,12 @@
+.gmb.mat.chiSquareDistance:{[table]
+    //takes table of categorical variables, returns chisquare distance matrix
+    n:count table;
+    p:count cols table;
+    CompleteDisjunctivetable:.gmb.preprocessing.oneHotEncoder[table][`CDT];
+    cDT:flip value flip CompleteDisjunctivetable;
+    observationNumber:til n;
+    step1:{[x;y]y[x]<>/:y}\:[til n;cDT]; //diff of CDT entries squared
+    step2:{[step1;cDT]step1[til count cDT]%\:(sum cDT)}\:[step1;cDT]; //step2 divide each entry by sum of columns of CDT
+    chi:({[x;y]sum each y[x]}\:[til count CompleteDisjunctivetable;step2])*n%p; //matrix of chi squared distance between rows
+    :chi;
+    };

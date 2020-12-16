@@ -28,3 +28,9 @@
     rowProfileTable:completeDisjunctiveTable%(count cols table);
     :(`CDT`RFT`CPT`RPT)!(completeDisjunctiveTable;relativeFrequencyTable;columnProfileTable;rowProfileTable);
     };
+
+.gmb.preprocessing.binnedTable:{[n;table]
+    //table--table with continuous data
+    //returns the data into n bins
+    :flip(cols table)!(n xrank/: value flip table)
+ };

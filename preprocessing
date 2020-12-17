@@ -30,7 +30,8 @@
     };
 
 .gmb.preprocessing.binnedTable:{[n;table]
-    //table--table with continuous data
     //returns the data into n bins
+    //n--number of desired bins
+    //table--table with continuous data
     :flip(cols table)!(n xrank/: value flip table)
- };
+    };

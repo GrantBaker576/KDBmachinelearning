@@ -12,3 +12,7 @@
     };
 
 .gmb.mat.covarianceMatrix:{(x+flip(not n=\:n)*x:(n#'0.0),'(x$/:'(n:til count x)_\:x)%count first x)-a*\:a:avg each x} //from .stat.q
+.gmb.mat.getDiagonal:{[x]
+    //retrieves diagonal from a matrix
+    :x@'til count x;
+    }; 

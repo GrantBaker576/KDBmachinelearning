@@ -8,6 +8,14 @@
     :({[x;y]sum each y[x]}\:[til count cDT;step2])*n%p; //matrix of chi squared distance between rows
     };
 
+.gmb.mat.chiSquareDistanceColumn:{[table]
+    //takes table of categorical variables, returns chisquare distance matrix of cols(variables)
+    n:count table;
+    cDT:flip value flip .gmb.preprocessing.oneHotEncoder[table][`CDT];
+    //n* sums squar diffs between CDT columns
+    :n*sum each {[n;cDT] flip((flip cDT)[n] <>/: (flip cDT)[til count flip cDT])}\:[til count flip cDT;cDT]; 
+ };
+
 .gmb.mat.covarianceMatrix:{(x+flip(not n=\:n)*x:(n#'0.0),'(x$/:'(n:til count x)_\:x)%count first x)-a*\:a:avg each x} //from .stat.q
 
 .gmb.mat.getDiagonal:{[x]

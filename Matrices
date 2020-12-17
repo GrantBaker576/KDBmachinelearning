@@ -12,7 +12,22 @@
     };
 
 .gmb.mat.covarianceMatrix:{(x+flip(not n=\:n)*x:(n#'0.0),'(x$/:'(n:til count x)_\:x)%count first x)-a*\:a:avg each x} //from .stat.q
+
 .gmb.mat.getDiagonal:{[x]
     //retrieves diagonal from a matrix
     :x@'til count x;
     }; 
+
+.gmb.mat.mahalanobisDistance:{[dataSet]
+    //takes a table OR array
+    //each observation is included in set of observations
+    //room for improvement on finding covariance table
+    $[98h=type dataSet;matrix:"f"$(value flip dataSet);matrix:"f"$dataSet]; //takes a table or array, turns into an array
+    observation:(flip matrix);
+    step1: observation -\: (avg each matrix);
+    covMatrix:(matrix) scov/:\:(matrix);
+    step2:(step1) mmu (inv covMatrix);
+    step3:sqrt (step2 mmu/: step1);
+    Mahalanobis:.gmb.mat.getDiagonal[step3];
+    :flip (enlist `Mahalanobis)!(enlist Mahalanobis);
+    };

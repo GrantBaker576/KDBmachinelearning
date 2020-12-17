@@ -1,5 +1,5 @@
-.gmb.mat.chiSquareDistance:{[table]
-    //takes table of categorical variables, returns chisquare distance matrix
+.gmb.mat.chiSquareDistanceRow:{[table]
+    //takes table of categorical variables, returns chisquare distance matrix of row profiles(observations)
     n:count table;
     p:count cols table;
     CompleteDisjunctivetable:.gmb.preprocessing.oneHotEncoder[table][`CDT];

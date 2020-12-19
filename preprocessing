@@ -35,3 +35,11 @@
     //table--table with continuous data
     :flip(cols table)!(n xrank/: value flip table)
     };
+.gmb.preprocessing.ordinalScale:{[table;ordinalList]
+    //table -- table with only orindinal columns
+    //ordinalList -- symbol list of the ordinal features in order from lowest rank to highest
+    //returns table with ordinal columns scaled 0 to max rank
+    uniqueList:distinct ordinalList; //sanity check
+    scaleDictionary:uniqueList!til count uniqueList;
+    :{@[x;y;:;z[x[y]]]}[table;;scaleDictionary]cols table;
+ };

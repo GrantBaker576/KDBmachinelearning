@@ -35,6 +35,16 @@
     //table--table with continuous data
     :flip(cols table)!(n xrank/: value flip table)
     };
+    
+.gmb.preprocessing.binaryScale:{[table;binaryList]
+    //table -- table with only orindinal columns
+    //binaryList -- binary list (any data type) of the binary features in desired order from 1 to 0
+    //returns table with binary columns changed to 1 and 0
+    uniqueList:distinct binaryList; //sanity check
+    binaryDictionary:uniqueList!(1;0);
+    :{@[x;y;:;z[x[y]]]}[table;;binaryDictionary]cols table;
+ };
+ 
 .gmb.preprocessing.ordinalScale:{[table;ordinalList]
     //table -- table with only orindinal columns
     //ordinalList -- symbol list of the ordinal features in order from lowest rank to highest

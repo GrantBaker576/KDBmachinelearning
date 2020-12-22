@@ -53,3 +53,7 @@
     scaleDictionary:uniqueList!til count uniqueList;
     :{@[x;y;:;z[x[y]]]}[table;;scaleDictionary]cols table;
  };
+
+gmb.preprocessing.singleValueColumns:{[table]
+    :(count each distinct each flip GroceryList)?1;
+ };

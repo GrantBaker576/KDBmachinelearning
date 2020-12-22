@@ -55,5 +55,5 @@
  };
 
 gmb.preprocessing.singleValueColumns:{[table]
-    :(count each distinct each flip GroceryList)?1;
+    :(count each distinct each flip table)?1;
  };

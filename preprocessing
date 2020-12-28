@@ -38,8 +38,8 @@
     
 .gmb.preprocessing.binaryScale:{[table;binaryList]
     //table -- table with only orindinal columns
-    //binaryList -- binary list (any data type) of the binary features in desired order from 1 to 0
-    //returns table with binary columns changed to 1 and 0
+    //binaryList -- binary list (any data type) of the binary features in desired order from 0 to 1
+    //returns table with binary columns changed to 0 and 1
     uniqueList:distinct binaryList; //sanity check
     binaryDictionary:uniqueList!(1;0);
     :{@[x;y;:;z[x[y]]]}[table;;binaryDictionary]cols table;

@@ -1,5 +1,5 @@
 .gmb.preprocessing.oneHotEncoder:{[table]
-    //Create Dummy variables out of categorical:
+    //Create k Dummy variables out of categorical:
     //table--takes only table with only categorical variables(symbols), cannot start with number
     table:`$string table; //converts table to string, then symbol. Helps feed numerical categorical variables 
     n:count table; // count rows
@@ -28,7 +28,38 @@
     rowProfileTable:completeDisjunctiveTable%(count cols table);
     :(`CDT`RFT`CPT`RPT)!(completeDisjunctiveTable;relativeFrequencyTable;columnProfileTable;rowProfileTable);
     };
-
+.gmb.preprocessing.oneHotEncoderKMinusOne:{[table]
+    //Create k-1 Dummy variables per column out of categorical table
+    //table--takes only table with only categorical variables(symbols), cannot start with number
+    table:`$string table; //converts table to string, then symbol. Helps feed numerical categorical variables 
+    n:count table; // count rows
+    p:count cols table; //count columns
+    //adds name of column to table entries
+    newCols:`$(raze string (count table)#/:cols table) ,'(raze value flip string table); //nondistict list of newColumns
+    distinctEntries:count each distinct each table[cols table]; //list of distinct entries per column
+    /take:distinctEntries*count table 
+    shape:(sum distinctEntries ; count table);
+    table:flip (cols table)!((count cols table)#shape#newCols);
+    //section creates comparative table for boolean later
+    uniqueColumnList:distinct newCols;
+    //create and populate a table with dummy values and dummy variables
+    dummytable:flip uniqueColumnList!(flip (count table)#(enlist (count uniqueColumnList)#`sym)); //dummytable filled with `sym
+    dummytable2:0#dummytable;
+    //populate dummytable entries with its own column names
+    dummytable:{@[x;y;:;y]}/[dummytable;cols dummytable];
+    colsTable:cols table; //list of categorical variables
+    distinctEntries:count each distinct each table[cols table]; //list of distinct entries per variable
+    take:distinctEntries*count table; // list, unique entries for each column * number of rows
+    shape:(sum distinctEntries ; count table); //number of columns, rows for final table
+    dummytable2:(dummytable2 upsert (flip (shape)#raze(take # ' value flip table)));
+    completeDisjunctiveTable:1*dummytable=dummytable2;
+    //start deleting k-1 columns
+    distinctEntries[0]:distinctEntries[0]-1;
+    distinctEntries:(+\)distinctEntries;
+    colsSuperfluous:(raze cols completeDisjunctiveTable)[distinctEntries];
+    completeDisjunctiveTable:![completeDisjunctiveTable;();0b; colsSuperfluous];
+    :completeDisjunctiveTable;
+    };
 .gmb.preprocessing.binnedTable:{[n;table]
     //returns the data into n bins
     //n--number of desired bins

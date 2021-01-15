@@ -1,4 +1,33 @@
-.gmb.mat.chiSquareDistanceRow:{[table]
+\d .gmb.mat
+//null aware primitives from Nick Psaris's Funq
+noflip:{system"g"}              / redefine to customize behavior
+ncount:{count[x]-$[type x;sum null x;0i {x+null y}/ x]}
+nsum:{$[type x;sum x;0i {x+0i^y}/ x]}
+navg:{$[type x;avg x;nsum[x]%ncount x]}
+nwavg:{[w;x]$[type x;w wavg x;(%/){x+y*(0f^z;not null z)}/[0 0f;w;x]]}
+nvar:{$[type x;var x;navg[x*x]-m*m:navg x]}
+ndev:{sqrt nvar::}
+nsvar:{$[type x;svar x;(n*nvar x)%-1+n:ncount x]}
+nsdev:{sqrt nsvar::}
+//Matrix functions & primitives from Nick Psaris's Funq
+f2nd:{[f;X]$[noflip[];(f value::) peach flip (count[X]#`)!X;f peach flip X]} //avoids flips when garbage collection is on --Nick Psaris Funq
+mm:{$[;y] peach x} //X mmu Y replacement
+mmt:{(y$) peach x} // X mmu flip Y replacement 
+mtm:{f2nd[$[;y];x]} //flip X mmu Y replacement 
+
+// My custom Matrix Functions
+nSCovMatrix:{[matrix]
+    //takes table or array
+    //null aware Sample Covariance Matrix
+    $[98h=type matrix;matrix:"f"$(flip matrix[cols matrix]);matrix:"f"$matrix];
+    corMatrix:u cor/:\:u: flip matrix;
+    sd:sqrt nsvar[matrix]; //standard dev of each variable
+    diagMatrix:sd*{x=/:x}til first count each dataSet;
+    :covMatrix:(n%-1+n:first count each matrix)*(diagMatrix) mmu corMatrix mmu (diagMatrix);
+ };
+
+
+chiSquareDistanceRow:{[table]
     //takes table of categorical variables, returns chisquare distance matrix of rows(observations)
     n:count table;
     p:count cols table;
@@ -8,7 +37,7 @@
     :({[x;y]sum each y[x]}\:[til count cDT;step2])*n%p; //matrix of chi squared distance between rows
     };
 
-.gmb.mat.chiSquareDistanceColumn:{[table]
+chiSquareDistanceColumn:{[table]
     //takes table of categorical variables, returns chisquare distance matrix of cols(variables)
     n:count table;
     cDT:flip value flip .gmb.preprocessing.oneHotEncoder[table][`CDT];
@@ -16,14 +45,14 @@
     :n*sum each {[n;cDT] flip((flip cDT)[n] <>/: (flip cDT)[til count flip cDT])}\:[til count flip cDT;cDT]; 
  };
 
-.gmb.mat.covarianceMatrix:{(x+flip(not n=\:n)*x:(n#'0.0),'(x$/:'(n:til count x)_\:x)%count first x)-a*\:a:avg each x} //from .stat.q
+covarianceMatrix:{(x+flip(not n=\:n)*x:(n#'0.0),'(x$/:'(n:til count x)_\:x)%count first x)-a*\:a:avg each x} //from .stat.q
 
-.gmb.mat.getDiagonal:{[x]
+getDiagonal:{[x]
     //retrieves diagonal from a matrix
     :x@'til count x;
     }; 
 
-.gmb.mat.mahalanobisDistance:{[dataSet]
+mahalanobisDistance:{[dataSet]
     //takes a table OR array
     //each observation is included in set of observations
     //room for improvement on finding covariance table

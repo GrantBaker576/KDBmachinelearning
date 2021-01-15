@@ -53,15 +53,14 @@ getDiagonal:{[x]
     }; 
 
 mahalanobisDistance:{[dataSet]
-    //takes a table OR array
+    //takes a table OR array, null aware, uses sample cov
     //each observation is included in set of observations
     //room for improvement on finding covariance table
-    $[98h=type dataSet;matrix:"f"$(value flip dataSet);matrix:"f"$dataSet]; //takes a table or array, turns into an array
+    $[98h=type dataSet;matrix:"f"$(value flip dataSet);matrix:"f"$dataSet];
     observation:(flip matrix);
-    step1: observation -\: (avg each matrix);
-    covMatrix:(matrix) scov/:\:(matrix);
-    step2:(step1) mmu (inv covMatrix);
+    step1: 0f^(observation -\: (navg peach matrix));
+    covMatrix:nSCovMatrix[0^observation]; 
+    step2: $[;inv covMatrix] peach step1;
     step3:sqrt (step2 mmu/: step1);
-    Mahalanobis:.gmb.mat.getDiagonal[step3];
-    :flip (enlist `Mahalanobis)!(enlist Mahalanobis);
+    :getDiagonal[step3];
     };

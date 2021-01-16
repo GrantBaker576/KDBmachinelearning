@@ -22,7 +22,7 @@ nSCovMatrix:{[matrix]
     $[98h=type matrix;matrix:"f"$(flip matrix[cols matrix]);matrix:"f"$matrix];
     corMatrix:u cor/:\:u: flip matrix;
     sd:sqrt nsvar[matrix]; //standard dev of each variable
-    diagMatrix:sd*{x=/:x}til first count each dataSet;
+    diagMatrix:sd*{x=/:x}til first count each matrix;
     :covMatrix:(diagMatrix) mmu corMatrix mmu (diagMatrix);
  };
 
